@@ -12,10 +12,10 @@ import org.java_websocket.server.WebSocketServer;
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 
-public class TestServer extends WebSocketServer{
+public class MyWebSocketServer extends WebSocketServer{
 
-	public TestServer(int port) throws UnknownHostException {
-		super( new InetSocketAddress(InetAddress.getLocalHost()	, port) );
+	public MyWebSocketServer(int port) throws UnknownHostException {
+		super( new InetSocketAddress(InetAddress.getLocalHost(), port) );
 	}
 
 	@Override
@@ -35,18 +35,9 @@ public class TestServer extends WebSocketServer{
 	public void onError( WebSocket conn, Exception ex ){}
 
 	public static void main(String[] args) throws UnknownHostException{
-		//variety of address tests
-		InetAddress[] tests = {
-			InetAddress.getByName("localhost"),
-			InetAddress.getByName("172.31.141.132"),
-			InetAddress.getLocalHost()
-		};
-		for(InetAddress a : tests){
-			System.out.println(a);
-		}
-		TestServer t = new TestServer(8081);
-		t.start();
-		InetSocketAddress addr = t.getAddress();
+		MyWebSocketServer server = new MyWebSocketServer(8081);
+		server.start();
+		InetSocketAddress addr = server.getAddress();
 		System.out.println("Server listening at " + addr.getHostString() + ":" + addr.getPort());
 	}
 }

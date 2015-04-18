@@ -1,1 +1,0 @@
-java -cp Java-WebSocket/dist/java_websocket.jar:. TestServer
