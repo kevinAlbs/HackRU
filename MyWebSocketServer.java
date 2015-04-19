@@ -63,7 +63,7 @@ public class MyWebSocketServer extends WebSocketServer{
 		// TODO spawn new process for http server
 		System.out.println("Navigate your phone to http://" + addr.getAddress().getHostAddress() + ":" + addr.getPort());
 
-		long sex = 60;
+		long sex = 300;
 		System.out.println("You have " + sex + " seconds before this program terminates");
 
 		Timer t = new Timer();

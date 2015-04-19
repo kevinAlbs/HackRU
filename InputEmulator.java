@@ -11,7 +11,7 @@ public class InputEmulator implements Runnable
    
   public InputEmulator() throws AWTException
   {
-    robot.setAutoDelay(40);
+    //robot.setAutoDelay(40);
     robot.setAutoWaitForIdle(true);
     commandQ = new ConcurrentLinkedQueue<String>();
   }
@@ -46,6 +46,12 @@ public class InputEmulator implements Runnable
       for(String k : values){
         type(k);
       }
+    } else if (name.equals("movemouse")){
+      int x = Integer.parseInt(values[0]);
+      int y = Integer.parseInt(values[1]);
+      robot.mouseMove(x,y);
+      System.out.println("Moving mouse");
+      //robot.delay()
     }
   }
 
