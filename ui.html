@@ -18,19 +18,22 @@
 		</style>
 	</head>
 	<body>
-		<div id="touchpad">
+		<div id="touchpad" style="margin: 50px;">
 			Touchpad
 		</div>
 		<button data-key="a">Press A</button>
 		<button data-key="b">Press B</button>
 		<button data-mouse="topleft">Move Mouse to top left</button>
                 <script>
+                        // 100px width subtraction accounts for the margin 
+                        // 220px height subtractiont accounts for margin and
+                        // browser/phone additional elements
 			var touchpad = document.getElementById("touchpad")
 				, ws = new WebSocket("ws://<LOCAL_IP>:8081")
 				, screen_width = 0
 				, screen_height = 0
-				, phone_width = window.screen.width
-                                , phone_height = window.screen.height
+				, phone_width = window.screen.width - 100
+                                , phone_height = window.screen.height - 220
                                 , tap_possible = false
                                 , tap_timer = null
 				;
@@ -48,7 +51,8 @@
 
 			function initialize(){
 				touchpad.style.width = phone_width + "px";
-				touchpad.style.height = phone_height + "px";
+
+                                touchpad.style.height = phone_height + "px";
 
 				document.querySelector("[data-key=a]").addEventListener("click", function(e){
 					ws.send("keypress:a");
@@ -60,19 +64,20 @@
 					ws.send("movemouse:10,10");
 				});
 
-				document.addEventListener('touchmove', function(e){ 
+				touchpad.addEventListener('touchmove', function(e){ 
 					e.preventDefault(); //prevents scrolling on mobile
-					//get current touch position
+                                        // get current touch position
+                                        // 50px subtraction accounts for the touchpad margin
 					var touch = e.touches[0]
-						, touch_x = touch.clientX
-						, touch_y = touch.clientY
+						, touch_x = touch.clientX - 50
+						, touch_y = touch.clientY - 50
 						, scaled_x = parseInt(touch_x * (screen_width / phone_width))
 						, scaled_y = parseInt(touch_y * (screen_height / phone_height))
 						;
 					ws.send("movemouse:" + scaled_x + "," + scaled_y);
-					console.log(e);
+                                        console.log(e);
                                 });
-                                document.addEventListener('touchstart', function(e){ 
+                                touchpad.addEventListener('touchstart', function(e){ 
                                     tap_possible = true;
                                     if(tap_timer != null) {
                                         window.clearTimeout(tap_timer);
@@ -81,7 +86,7 @@
                                         tap_possible = false;
                                     }, 100);
                                 });
-                                document.addEventListener('touchend', function(e){ 
+                                touchpad.addEventListener('touchend', function(e){ 
                                     if(tap_possible) {
                                         ws.send("mouseclick: 1");
                                     }
