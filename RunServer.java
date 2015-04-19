@@ -26,18 +26,18 @@ public class RunServer {
 
     public static void main(String[] args) throws Exception {
         HttpServer server = HttpServer.create(new InetSocketAddress(8000), 0);
-        copyFile();
-        server.createContext("/controller", new MyHandler());
+        server.createContext("/mouse", new MyHandler(copyFile("ui.html")));
+        server.createContext("/rotate", new MyHandler(copyFile("rotate.html")));
         server.setExecutor(null); // creates a default executor
         System.out.println("HTTP Server Running...");
         server.start();
     }
 
-    private static void copyFile() {
+    private static String copyFile(String filename) {
         BufferedReader br = null;
         PrintWriter pw = null; 
-        String sourceFileName = STATIC_FILE_NAME;
-        String destinationFileName = "mod_" + STATIC_FILE_NAME;
+        String sourceFileName = filename;
+        String destinationFileName = "mod_" + filename;
         try {
             br = new BufferedReader(new FileReader( sourceFileName ));
             pw =  new PrintWriter(new FileWriter( destinationFileName ));
@@ -53,7 +53,7 @@ public class RunServer {
         }catch (Exception e) {
             e.printStackTrace();
         }
-        STATIC_FILE_NAME = destinationFileName;
+        return destinationFileName;
     }
     private static String replaceIP(String src) {
         if(DETERMINED_IP == null) {
@@ -94,10 +94,14 @@ public class RunServer {
     }
 
     public static class MyHandler implements HttpHandler {
+        private String filename;
+        public MyHandler(String filename){
+            this.filename = filename;
+        }
         public void handle(HttpExchange t) throws IOException {
             t.sendResponseHeaders(200, 0);
             OutputStream os = t.getResponseBody();
-            File file = new File(STATIC_FILE_NAME);
+            File file = new File(filename);
             FileInputStream fs = new FileInputStream(file);
             final byte[] buffer = new byte[0x10000];
             int count = 0;

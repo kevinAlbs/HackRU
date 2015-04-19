@@ -3,6 +3,7 @@ import java.awt.Robot;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.awt.event.KeyEvent;
  
 public class InputEmulator implements Runnable
 {
@@ -41,20 +42,49 @@ public class InputEmulator implements Runnable
   private void runCommand(String s){
     String[] parts = s.split(":");
     String name = parts[0];
-    String[] values = parts[1].split(",");
+    String[] values = {};
+    if (parts.length == 2) {
+      values = parts[1].split(",");
+    }
     if(name.equals("keypress")){
       for(String k : values){
         type(k);
       }
-    } else if (name.equals("movemouse")){
+    } else if(name.equals("keydown")){
+      for(String k : values){
+        if(k.equals("shift")){
+          //hacky, but will do later
+          robot.delay(40);
+          robot.keyPress(KeyEvent.VK_SHIFT);
+        } else if(k.equals("enter")){
+          robot.delay(40);
+          System.out.println("Pressing enter");
+          robot.keyPress(13);
+        }
+      }
+    } else if(name.equals("keyup")) {
+      for(String k : values){
+        if(k.equals("shift")){
+          //hacky, but will do later
+          robot.delay(40);
+          robot.keyRelease(KeyEvent.VK_SHIFT);
+        } else if(k.equals("enter")){
+          robot.delay(40);
+          robot.keyRelease(13);
+        }
+      }
+    }else if (name.equals("movemouse")){
       int x = Integer.parseInt(values[0]);
       int y = Integer.parseInt(values[1]);
       robot.mouseMove(x,y);
       System.out.println("Moving mouse");
       //robot.delay()
     } else if (name.equals("mouseclick")) {
-      System.out.println("should have clikced bitch");
       robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
+      robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
+    } else if (name.equals("mousedown")){
+      robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
+    } else if (name.equals("mouseup")){
       robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
     }
   }

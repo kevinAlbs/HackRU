@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=300, initial-scale=1">
+		<title>Phone Controller</title>
+		<style type="text/css">
+			*{
+				margin: 0px;
+				padding: 0px;
+			}
+			#rotate {
+				background: #60DDF0;
+				border-radius: 20px;
+				width: 100px;
+				height: 100px;
+				text-align: center;
+			}
+			#rotate[data-active=true]{
+				background: #607DF0;
+			}
+			#container {
+				width: 100px;
+				margin: 0px auto;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="container">
+			<div id="rotate">
+				Rotate
+			</div>
+		</div>
+		<p id="absolute"></p>
+		<p id="alpha"></p>
+		<p id="beta"></p>
+		<p id="gamma"></p>
+        <script>
+			var btn = document.getElementById("rotate")
+				, ws = new WebSocket("ws://<LOCAL_IP>:8081")
+				, screen_width = 0
+				, screen_height = 0
+				, phone_width = window.screen.width
+                , phone_height = window.screen.height
+                , rotation_mode = false
+				;
+
+			ws.onmessage = function(event){
+				var parts = event.data.split(":");
+				var name = parts[0];
+				var values = parts[1].split(",");
+				if(name == "info"){
+					screen_width = parseInt(values[0]);
+					screen_height = parseInt(values[1]);
+					initialize();
+				}
+			};
+
+			function handleOrientation(evt){
+				if(rotation_mode){
+					//based on angle, calculate mouse_x and mouse_y from origin
+					var angle = evt.alpha * Math.PI / 180
+						, hypotenuse = 100
+						, offset_x = screen_width / 2
+						, offset_y = screen_height / 2
+						, mouse_x = Math.cos(angle) * hypotenuse + offset_x
+						, mouse_y = Math.sin(angle) * hypotenuse + offset_y
+						;
+					document.getElementById("alpha").innerHTML = angle + " <" + mouse_x + "," + mouse_y + ">";
+					
+					ws.send("movemouse:"+Math.round(mouse_x)+","+Math.round(mouse_y));
+				}
+			};
+
+			function initialize(){
+				btn.addEventListener("click", function(){
+					if(!rotation_mode){
+						btn.setAttribute("data-active", "true");
+						ws.send("keydown:shift");
+						ws.send("keypress:r");
+						ws.send("keyup:shift");
+						ws.send("mousedown");
+						rotation_mode = true;
+
+					} else {
+						btn.setAttribute("data-active", "false");
+						ws.send("mouseup");
+						window.setTimeout(function(){
+							ws.send("keydown:enter"); //make press later TODO
+							ws.send("keyup:enter");
+						}, 1000)
+						
+						rotation_mode = false;
+					}
+				});
+				window.addEventListener("deviceorientation", handleOrientation, false);
+			}
+
+		</script>
+	</body>
+</html>
