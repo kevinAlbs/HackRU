@@ -7,8 +7,11 @@ java -cp Java-WebSocket/dist/java_websocket.jar:. TestServer
 import java.net.UnknownHostException;
 import java.net.InetSocketAddress;
 import java.net.InetAddress;
+import java.net.Inet4Address;
+import java.net.NetworkInterface;
 import java.awt.AWTException;
-import java.net.*;
+import java.awt.Toolkit;
+import java.awt.Dimension;
 import java.util.Enumeration;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -27,44 +30,50 @@ public class MyWebSocketServer extends WebSocketServer{
 		ie = new InputEmulator();
 		ie_thread = new Thread(ie);
 		ie_thread.start();
-        }
+    }
 
-        private static InetAddress fetchLocalIP() {
-            InetAddress myLocalIP = null;
-            try {
-                Enumeration e = NetworkInterface.getNetworkInterfaces();
-                while(e.hasMoreElements())
+     private static InetAddress fetchLocalIP() {
+        InetAddress myLocalIP = null;
+        try {
+            Enumeration e = NetworkInterface.getNetworkInterfaces();
+            while(e.hasMoreElements())
+            {
+                NetworkInterface n = (NetworkInterface) e.nextElement();
+                Enumeration ee = n.getInetAddresses();
+                // filters out localhost
+                if (n.isLoopback() || !n.isUp()) {
+                    continue;
+                }
+                while (ee.hasMoreElements())
                 {
-                    NetworkInterface n = (NetworkInterface) e.nextElement();
-                    Enumeration ee = n.getInetAddresses();
-                    // filters out localhost
-                    if (n.isLoopback() || !n.isUp()) {
+                    InetAddress i = (InetAddress) ee.nextElement();
+                    if(!(i instanceof Inet4Address)) {
                         continue;
                     }
-                    while (ee.hasMoreElements())
-                    {
-                        InetAddress i = (InetAddress) ee.nextElement();
-                        if(!(i instanceof Inet4Address)) {
-                            continue;
-                        }
-                        myLocalIP = i;
-                    }
+                    myLocalIP = i;
                 }
-            } catch (Exception e) {
-                System.out.println("Error fetching IP address");
-                System.exit(1);
             }
-            if(myLocalIP == null) {
-                System.out.println("Error fetching IP address");
-                System.exit(1);
-            }
-            return myLocalIP;
+        } catch (Exception e) {
+            System.out.println("Error fetching IP address");
+            System.exit(1);
         }
+        if(myLocalIP == null) {
+            System.out.println("Error fetching IP address");
+            System.exit(1);
+        }
+        return myLocalIP;
+    }
 
-        @Override
-        public void onOpen( WebSocket conn, ClientHandshake handshake ){
-            System.out.println("Websocket open");
+	@Override
+	public void onOpen( WebSocket conn, ClientHandshake handshake ){
+		System.out.println("Websocket open");
+		System.out.println("Sending screen information");
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		double width = screenSize.getWidth();
+		double height = screenSize.getHeight();
+		conn.send("info:" + width + "," + height);
 	}
+
 	@Override
 	public void onClose( WebSocket conn, int code, String reason, boolean remote ){
 		System.out.println("Websocket closed");
@@ -73,11 +82,7 @@ public class MyWebSocketServer extends WebSocketServer{
 	@Override
 	public void onMessage( WebSocket conn, String message ){
 		System.out.println("Recieved message " + message);
-		if(message.equals("getinfo")){
-			//special command, return screen size, and any other relevant info TODO
-		} else {
-			ie.enqueueCommand(message);
-		}
+		ie.enqueueCommand(message);
 	}
 
 	@Override
