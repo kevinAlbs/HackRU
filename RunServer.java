@@ -29,6 +29,7 @@ public class RunServer {
         copyFile();
         server.createContext("/controller", new MyHandler());
         server.setExecutor(null); // creates a default executor
+        System.out.println("HTTP Server Running...");
         server.start();
     }
 

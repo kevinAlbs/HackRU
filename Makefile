@@ -11,10 +11,10 @@ JFLAGS = -g
 
 CLASSPATH = Java-WebSocket/dist/java_websocket.jar
 
-default: Start.class 
+default: Start.class
 
-Start.class: MyWebSocketServer.java InputEmulator.java Start.java
-	$(JCC) $(JFLAGS) -cp $(CLASSPATH) MyWebSocketServer.java InputEmulator.java Start.java
+Start.class: MyWebSocketServer.java InputEmulator.java Start.java RunServer.java
+	$(JCC) $(JFLAGS) -cp $(CLASSPATH) MyWebSocketServer.java InputEmulator.java Start.java RunServer.java
 
 clean:
 	$(RM) *.class
