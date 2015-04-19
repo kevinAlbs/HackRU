@@ -25,40 +25,53 @@
 		<button data-key="b">Press B</button>
 		<button data-mouse="topleft">Move Mouse to top left</button>
 		<script>
-			var touchpad = document.getElementById("touchpad");
-                        var ws = new WebSocket("ws://<LOCAL_IP>:8081");
+			var touchpad = document.getElementById("touchpad")
+				, ws = new WebSocket("ws://<LOCAL_IP>:8081")
+				, screen_width = 0
+				, screen_height = 0
+				, phone_width = window.screen.width
+				, phone_height = window.screen.height
+				;
 
 			ws.onmessage = function(event){
-				console.log("Recieved message " + event.data);	
+				var parts = event.data.split(":");
+				var name = parts[0];
+				var values = parts[1].split(",");
+				if(name == "info"){
+					screen_width = parseInt(values[0]);
+					screen_height = parseInt(values[1]);
+					initialize();
+				}
 			};
 
-			document.querySelector("[data-key=a]").addEventListener("click", function(e){
-				ws.send("keypress:a");
-			});
-			document.querySelector("[data-key=b]").addEventListener("click", function(e){
-				ws.send("keypress:b");
-			});
-			document.querySelector("[data-mouse=topleft]").addEventListener("click", function(e){
-				ws.send("movemouse:10,10");
-			});
+			function initialize(){
+				touchpad.style.width = phone_width + "px";
+				touchpad.style.height = phone_height + "px";
 
-			document.addEventListener('touchmove', function(e){ 
-				e.preventDefault(); //prevents scrolling on mobile
-				//get current touch position
-				var touch = e.touches[0]
-					, touch_x = parseInt(touch.clientX)
-					, touch_y = parseInt(touch.clientY)
-					;
-				ws.send("movemouse:" + touch_x + "," + touch_y);
-				console.log(e);
-			});
-			
-			function initUI(){
-				touchpad.style.width = window.screen.width + "px";
-				touchpad.style.height = window.screen.height + "px";
+				document.querySelector("[data-key=a]").addEventListener("click", function(e){
+					ws.send("keypress:a");
+				});
+				document.querySelector("[data-key=b]").addEventListener("click", function(e){
+					ws.send("keypress:b");
+				});
+				document.querySelector("[data-mouse=topleft]").addEventListener("click", function(e){
+					ws.send("movemouse:10,10");
+				});
+
+				document.addEventListener('touchmove', function(e){ 
+					e.preventDefault(); //prevents scrolling on mobile
+					//get current touch position
+					var touch = e.touches[0]
+						, touch_x = touch.clientX
+						, touch_y = touch.clientY
+						, scaled_x = parseInt(touch_x * (screen_width / phone_width))
+						, scaled_y = parseInt(touch_y * (screen_height / phone_height))
+						;
+					ws.send("movemouse:" + scaled_x + "," + scaled_y);
+					console.log(e);
+				});
 			}
 
-			initUI();
 		</script>
 	</body>
 </html>
