@@ -8,6 +8,8 @@ import java.net.UnknownHostException;
 import java.net.InetSocketAddress;
 import java.net.InetAddress;
 import java.awt.AWTException;
+import java.net.*;
+import java.util.Enumeration;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -20,15 +22,48 @@ public class MyWebSocketServer extends WebSocketServer{
 	private Thread ie_thread;
 
 	public MyWebSocketServer(int port) throws UnknownHostException, AWTException {
-		super( new InetSocketAddress(InetAddress.getLocalHost(), port) );
+		//super( new InetSocketAddress(InetAddress.getLocalHost(), port) );
+		super( new InetSocketAddress(fetchLocalIP(), port) );
 		ie = new InputEmulator();
 		ie_thread = new Thread(ie);
 		ie_thread.start();
-	}
+        }
 
-	@Override
-	public void onOpen( WebSocket conn, ClientHandshake handshake ){
-		System.out.println("Websocket open");
+        private static InetAddress fetchLocalIP() {
+            InetAddress myLocalIP = null;
+            try {
+                Enumeration e = NetworkInterface.getNetworkInterfaces();
+                while(e.hasMoreElements())
+                {
+                    NetworkInterface n = (NetworkInterface) e.nextElement();
+                    Enumeration ee = n.getInetAddresses();
+                    // filters out localhost
+                    if (n.isLoopback() || !n.isUp()) {
+                        continue;
+                    }
+                    while (ee.hasMoreElements())
+                    {
+                        InetAddress i = (InetAddress) ee.nextElement();
+                        if(!(i instanceof Inet4Address)) {
+                            continue;
+                        }
+                        myLocalIP = i;
+                    }
+                }
+            } catch (Exception e) {
+                System.out.println("Error fetching IP address");
+                System.exit(1);
+            }
+            if(myLocalIP == null) {
+                System.out.println("Error fetching IP address");
+                System.exit(1);
+            }
+            return myLocalIP;
+        }
+
+        @Override
+        public void onOpen( WebSocket conn, ClientHandshake handshake ){
+            System.out.println("Websocket open");
 	}
 	@Override
 	public void onClose( WebSocket conn, int code, String reason, boolean remote ){

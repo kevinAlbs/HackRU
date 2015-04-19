@@ -26,7 +26,7 @@
 		<button data-mouse="topleft">Move Mouse to top left</button>
 		<script>
 			var touchpad = document.getElementById("touchpad");
-			var ws = new WebSocket("ws://172.31.141.132:8081");
+                        var ws = new WebSocket("ws://<LOCAL_IP>:8081");
 
 			ws.onmessage = function(event){
 				console.log("Recieved message " + event.data);	
