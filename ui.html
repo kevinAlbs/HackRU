@@ -24,13 +24,15 @@
 		<button data-key="a">Press A</button>
 		<button data-key="b">Press B</button>
 		<button data-mouse="topleft">Move Mouse to top left</button>
-		<script>
+                <script>
 			var touchpad = document.getElementById("touchpad")
 				, ws = new WebSocket("ws://<LOCAL_IP>:8081")
 				, screen_width = 0
 				, screen_height = 0
 				, phone_width = window.screen.width
-				, phone_height = window.screen.height
+                                , phone_height = window.screen.height
+                                , tap_possible = false
+                                , tap_timer = null
 				;
 
 			ws.onmessage = function(event){
@@ -69,7 +71,21 @@
 						;
 					ws.send("movemouse:" + scaled_x + "," + scaled_y);
 					console.log(e);
-				});
+                                });
+                                document.addEventListener('touchstart', function(e){ 
+                                    tap_possible = true;
+                                    if(tap_timer != null) {
+                                        window.clearTimeout(tap_timer);
+                                    }
+                                    tap_timer = window.setTimeout(function (e) {
+                                        tap_possible = false;
+                                    }, 100);
+                                });
+                                document.addEventListener('touchend', function(e){ 
+                                    if(tap_possible) {
+                                        ws.send("mouseclick: 1");
+                                    }
+        			});
 			}
 
 		</script>

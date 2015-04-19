@@ -52,6 +52,10 @@ public class InputEmulator implements Runnable
       robot.mouseMove(x,y);
       System.out.println("Moving mouse");
       //robot.delay()
+    } else if (name.equals("mouseclick")) {
+      System.out.println("should have clikced bitch");
+      robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
+      robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
     }
   }
 
