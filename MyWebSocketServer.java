@@ -8,6 +8,8 @@ import java.net.UnknownHostException;
 import java.net.InetSocketAddress;
 import java.net.InetAddress;
 import java.awt.AWTException;
+import java.awt.Toolkit;
+import java.awt.Dimension;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -29,6 +31,11 @@ public class MyWebSocketServer extends WebSocketServer{
 	@Override
 	public void onOpen( WebSocket conn, ClientHandshake handshake ){
 		System.out.println("Websocket open");
+		System.out.println("Sending screen information");
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		double width = screenSize.getWidth();
+		double height = screenSize.getHeight();
+		conn.send("info:" + width + "," + height);
 	}
 	@Override
 	public void onClose( WebSocket conn, int code, String reason, boolean remote ){
@@ -38,11 +45,7 @@ public class MyWebSocketServer extends WebSocketServer{
 	@Override
 	public void onMessage( WebSocket conn, String message ){
 		System.out.println("Recieved message " + message);
-		if(message.equals("getinfo")){
-			//special command, return screen size, and any other relevant info TODO
-		} else {
-			ie.enqueueCommand(message);
-		}
+		ie.enqueueCommand(message);
 	}
 
 	@Override
