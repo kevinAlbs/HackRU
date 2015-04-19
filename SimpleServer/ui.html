@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Phone Controller</title>
+	</head>
+	<body>
+		<button>Click to test</button>
+		<script>
+			var ws = new WebSocket("ws://<LOCAL_IP>");
+			ws.onmessage = function(event){
+				alert(event.data);
+			};
+			document.getElementById("btn").addEventListener("click", function(){
+				ws.send("test from app");
+			});
+		</script>
+	</body>
+</html>
