@@ -1,18 +1,64 @@
 <!DOCTYPE html>
 <html>
 	<head>
+		<meta name="viewport" content="width=300, initial-scale=1">
 		<title>Phone Controller</title>
+		<style type="text/css">
+			*{
+				margin: 0px;
+				padding: 0px;
+			}
+			#touchpad {
+				width: 10px;
+				height: 10px;
+				background: rgba(0,0,0,.5);
+				outline: 10px blue solid;
+				color: #FFF;
+			}
+		</style>
 	</head>
 	<body>
-		<button>Click to test</button>
+		<div id="touchpad">
+			Touchpad
+		</div>
+		<button data-key="a">Press A</button>
+		<button data-key="b">Press B</button>
+		<button data-mouse="topleft">Move Mouse to top left</button>
 		<script>
-			var ws = new WebSocket("ws://<LOCAL_IP>");
+			var touchpad = document.getElementById("touchpad");
+			var ws = new WebSocket("ws://172.31.141.132:8081");
+
 			ws.onmessage = function(event){
-				alert(event.data);
+				console.log("Recieved message " + event.data);	
 			};
-			document.getElementById("btn").addEventListener("click", function(){
-				ws.send("test from app");
+
+			document.querySelector("[data-key=a]").addEventListener("click", function(e){
+				ws.send("keypress:a");
 			});
+			document.querySelector("[data-key=b]").addEventListener("click", function(e){
+				ws.send("keypress:b");
+			});
+			document.querySelector("[data-mouse=topleft]").addEventListener("click", function(e){
+				ws.send("movemouse:10,10");
+			});
+
+			document.addEventListener('touchmove', function(e){ 
+				e.preventDefault(); //prevents scrolling on mobile
+				//get current touch position
+				var touch = e.touches[0]
+					, touch_x = parseInt(touch.clientX)
+					, touch_y = parseInt(touch.clientY)
+					;
+				ws.send("movemouse:" + touch_x + "," + touch_y);
+				console.log(e);
+			});
+			
+			function initUI(){
+				touchpad.style.width = window.screen.width + "px";
+				touchpad.style.height = window.screen.height + "px";
+			}
+
+			initUI();
 		</script>
 	</body>
 </html>
