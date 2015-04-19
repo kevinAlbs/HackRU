@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Phone Controller</title>
+	</head>
+	<body>
+		<button data-key="a">Press A</button>
+		<button data-key="b">Press B</button>
+		<script>
+			var ws = new WebSocket("ws://172.31.141.132:8081");
+
+			ws.onmessage = function(event){
+				console.log("Recieved message " + event.data);	
+			};
+
+			document.querySelector("[data-key=a]").addEventListener("click", function(e){
+				ws.send("keypress:a");
+			});
+			document.querySelector("[data-key=b]").addEventListener("click", function(e){
+				ws.send("keypress:b");
+			});
+		</script>
+	</body>
+</html>

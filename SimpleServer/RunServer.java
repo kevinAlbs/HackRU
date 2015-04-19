@@ -11,7 +11,7 @@ import com.sun.net.httpserver.HttpServer;
 
 public class RunServer {
     // this assumes that the file is in the same directory as the Java server file
-    private static String STATIC_FILE_LOCATION = "Basic.html";
+    private static String STATIC_FILE_LOCATION = "ui-working.html";
 
     public static void main(String[] args) throws Exception {
         HttpServer server = HttpServer.create(new InetSocketAddress(8000), 0);
