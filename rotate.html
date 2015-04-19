@@ -10,17 +10,22 @@
 				padding: 0px;
 			}
 			#rotate {
+				font-family: "Arial";
 				background: #60DDF0;
-				border-radius: 20px;
+				border-radius: 50px;
 				width: 100px;
-				height: 100px;
+				height: 60px;
+				padding-top: 40px;
 				text-align: center;
+				border: 2px #456AFF solid;
+				color: #20368C;
 			}
 			#rotate[data-active=true]{
 				background: #607DF0;
 			}
 			#container {
 				width: 100px;
+				padding-top: 200px;
 				margin: 0px auto;
 			}
 		</style>
@@ -28,13 +33,10 @@
 	<body>
 		<div id="container">
 			<div id="rotate">
-				Rotate
+				ROTATE
 			</div>
 		</div>
-		<p id="absolute"></p>
 		<p id="alpha"></p>
-		<p id="beta"></p>
-		<p id="gamma"></p>
         <script>
 			var btn = document.getElementById("rotate")
 				, ws = new WebSocket("ws://<LOCAL_IP>:8081")
@@ -59,14 +61,14 @@
 			function handleOrientation(evt){
 				if(rotation_mode){
 					//based on angle, calculate mouse_x and mouse_y from origin
-					var angle = evt.alpha * Math.PI / 180
+					var angle = evt.alpha * -1 * Math.PI / 180 - (Math.PI/2)
 						, hypotenuse = 100
 						, offset_x = screen_width / 2
 						, offset_y = screen_height / 2
 						, mouse_x = Math.cos(angle) * hypotenuse + offset_x
 						, mouse_y = Math.sin(angle) * hypotenuse + offset_y
 						;
-					document.getElementById("alpha").innerHTML = angle + " <" + mouse_x + "," + mouse_y + ">";
+					//document.getElementById("alpha").innerHTML = angle + " <" + mouse_x + "," + mouse_y + ">";
 					
 					ws.send("movemouse:"+Math.round(mouse_x)+","+Math.round(mouse_y));
 				}
@@ -86,8 +88,11 @@
 						btn.setAttribute("data-active", "false");
 						ws.send("mouseup");
 						ws.send("mouseclick");
-						ws.send("keydown:enter");
-						ws.send("keyup:enter");
+						window.setTimeout(function(){
+							ws.send("keydown:enter");
+							ws.send("keyup:enter");
+						}, 500);
+
 						rotation_mode = false;
 					}
 				});

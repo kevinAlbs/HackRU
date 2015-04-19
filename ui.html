@@ -23,7 +23,6 @@
 		</div>
 		<button data-key="a">Press A</button>
 		<button data-key="b">Press B</button>
-		<button data-mouse="topleft">Move Mouse to top left</button>
                 <script>
                         // 100px width subtraction accounts for the margin 
                         // 220px height subtractiont accounts for margin and
@@ -52,16 +51,13 @@
 			function initialize(){
 				touchpad.style.width = phone_width + "px";
 
-                                touchpad.style.height = phone_height + "px";
+                touchpad.style.height = phone_height + "px";
 
 				document.querySelector("[data-key=a]").addEventListener("click", function(e){
 					ws.send("keypress:a");
 				});
 				document.querySelector("[data-key=b]").addEventListener("click", function(e){
 					ws.send("keypress:b");
-				});
-				document.querySelector("[data-mouse=topleft]").addEventListener("click", function(e){
-					ws.send("movemouse:10,10");
 				});
 
 				touchpad.addEventListener('touchmove', function(e){ 
@@ -75,21 +71,21 @@
 						, scaled_y = parseInt(touch_y * (screen_height / phone_height))
 						;
 					ws.send("movemouse:" + scaled_x + "," + scaled_y);
-                                        console.log(e);
-                                });
-                                touchpad.addEventListener('touchstart', function(e){ 
-                                    tap_possible = true;
-                                    if(tap_timer != null) {
-                                        window.clearTimeout(tap_timer);
-                                    }
-                                    tap_timer = window.setTimeout(function (e) {
-                                        tap_possible = false;
-                                    }, 100);
-                                });
-                                touchpad.addEventListener('touchend', function(e){ 
-                                    if(tap_possible) {
-                                        ws.send("mouseclick: 1");
-                                    }
+                            console.log(e);
+                    });
+                    touchpad.addEventListener('touchstart', function(e){ 
+                        tap_possible = true;
+                        if(tap_timer != null) {
+                            window.clearTimeout(tap_timer);
+                        }
+                        tap_timer = window.setTimeout(function (e) {
+                            tap_possible = false;
+                        }, 100);
+                    });
+                    touchpad.addEventListener('touchend', function(e){ 
+                        if(tap_possible) {
+                            ws.send("mouseclick: 1");
+                        }
         			});
 			}
 

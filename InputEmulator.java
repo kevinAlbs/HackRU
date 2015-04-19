@@ -58,7 +58,6 @@ public class InputEmulator implements Runnable
           robot.keyPress(KeyEvent.VK_SHIFT);
         } else if(k.equals("enter")){
           robot.delay(40);
-          System.out.println("Pressing enter");
           robot.keyPress(KeyEvent.VK_ENTER);
         }
       }
