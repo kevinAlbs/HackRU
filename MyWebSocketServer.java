@@ -66,8 +66,6 @@ public class MyWebSocketServer extends WebSocketServer{
 
 	@Override
 	public void onOpen( WebSocket conn, ClientHandshake handshake ){
-		System.out.println("Websocket open");
-		System.out.println("Sending screen information");
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		double width = screenSize.getWidth();
 		double height = screenSize.getHeight();
@@ -81,28 +79,20 @@ public class MyWebSocketServer extends WebSocketServer{
 
 	@Override
 	public void onMessage( WebSocket conn, String message ){
-		System.out.println("Recieved message " + message);
+		//System.out.println("Recieved message " + message);
 		ie.enqueueCommand(message);
 	}
 
 	@Override
 	public void onError( WebSocket conn, Exception ex ){}
 
-	public static void main(String[] args) throws UnknownHostException{
+	public static void main(String[] args) throws UnknownHostException, AWTException{
 		MyWebSocketServer server = null;
-		try {
-			server = new MyWebSocketServer(8081);	
-		} catch(AWTException awte){
-			System.err.println("Your system does not support the Java Robot library. We cannot emulate your mouse/keyboard");
-		} catch (UnknownHostException uhe){
-			System.err.println("A server cannot be created");
-		}		
+		server = new MyWebSocketServer(8081);			
 		server.start();
 		InetSocketAddress addr = server.getAddress();
-		System.out.println("Input Emulator is Running");
-		// TODO spawn new process for http server
-		System.out.println("Navigate your phone to http://" + addr.getAddress().getHostAddress() + ":8000/mouse");
-
+		System.out.println("Web Socket Server Running.");
+		/*
 		long sex = 300;
 		System.out.println("You have " + sex + " seconds before this program terminates");
 
@@ -112,5 +102,6 @@ public class MyWebSocketServer extends WebSocketServer{
 				System.exit(0);
 			}
 		}, sex * 1000);
+		*/
 	}
 }

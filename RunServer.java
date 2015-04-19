@@ -29,7 +29,10 @@ public class RunServer {
         server.createContext("/mouse", new MyHandler(copyFile("ui.html")));
         server.createContext("/rotate", new MyHandler(copyFile("rotate.html")));
         server.setExecutor(null); // creates a default executor
-        System.out.println("HTTP Server Running...");
+        String full_address = "http://" + DETERMINED_IP + ":8000/";
+        System.out.println("HTTP Server Running.");
+        System.out.println("Navigate to " + full_address + "mouse for a trackpad");
+        System.out.println("Navigate to "+ full_address + "rotate for a GIMP rotation button");
         server.start();
     }
 

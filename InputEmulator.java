@@ -26,7 +26,6 @@ public class InputEmulator implements Runnable
  
   private void type(String s)
   {
-    System.out.println("Typing " + s);
     byte[] bytes = s.getBytes();
     for (byte b : bytes)
     {
@@ -76,7 +75,6 @@ public class InputEmulator implements Runnable
       int x = Integer.parseInt(values[0]);
       int y = Integer.parseInt(values[1]);
       robot.mouseMove(x,y);
-      System.out.println("Moving mouse");
       //robot.delay()
     } else if (name.equals("mouseclick")) {
       robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
@@ -96,7 +94,6 @@ public class InputEmulator implements Runnable
     while(true){
       while(!commandQ.isEmpty()){
         String command = commandQ.remove();
-        System.out.println("Parsing " + command);
         runCommand(command);
       }
     }

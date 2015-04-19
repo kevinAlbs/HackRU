@@ -17,5 +17,5 @@ Start.class: MyWebSocketServer.java InputEmulator.java Start.java RunServer.java
 	$(JCC) $(JFLAGS) -cp $(CLASSPATH) MyWebSocketServer.java InputEmulator.java Start.java RunServer.java
 
 clean:
-	$(RM) *.class mod_ui.html
+	$(RM) *.class mod_ui.html mod_rotate.html
 
