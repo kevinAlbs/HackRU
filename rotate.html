@@ -85,11 +85,9 @@
 					} else {
 						btn.setAttribute("data-active", "false");
 						ws.send("mouseup");
-						window.setTimeout(function(){
-							ws.send("keydown:enter"); //make press later TODO
-							ws.send("keyup:enter");
-						}, 1000)
-						
+						ws.send("mouseclick");
+						ws.send("keydown:enter");
+						ws.send("keyup:enter");
 						rotation_mode = false;
 					}
 				});

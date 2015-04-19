@@ -59,7 +59,7 @@ public class InputEmulator implements Runnable
         } else if(k.equals("enter")){
           robot.delay(40);
           System.out.println("Pressing enter");
-          robot.keyPress(13);
+          robot.keyPress(KeyEvent.VK_ENTER);
         }
       }
     } else if(name.equals("keyup")) {
@@ -70,7 +70,7 @@ public class InputEmulator implements Runnable
           robot.keyRelease(KeyEvent.VK_SHIFT);
         } else if(k.equals("enter")){
           robot.delay(40);
-          robot.keyRelease(13);
+          robot.keyRelease(KeyEvent.VK_ENTER);
         }
       }
     }else if (name.equals("movemouse")){

@@ -4,10 +4,10 @@ import java.awt.event.*;
 
 public class KeyTest extends JFrame{
 	public static void main(String[] args){
+		System.out.println(KeyEvent.VK_ENTER);
 		JFrame f = new KeyTest();
 		f.setSize(100,100);
 		f.setVisible(true);
-		
 		f.setLocationRelativeTo(null);
 	}
 	public KeyTest(){
@@ -26,6 +26,8 @@ public class KeyTest extends JFrame{
 		    /** Handle the key-released event from the text field. */
 		    public void keyReleased(KeyEvent e) {
 		        //displayInfo(e, "KEY RELEASED: ");
+		        System.out.println("Hello");
+		        System.out.println(e.getKeyCode());
 		    }
 		});
 	}
