@@ -3,28 +3,14 @@ import java.awt.Robot;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
  
-public class JavaRobotExample
+public class InputEmulator
 {
   Robot robot = new Robot();
- 
-  public static void main(String[] args) throws AWTException
-  {
-    new JavaRobotExample();
-  }
    
-  public JavaRobotExample() throws AWTException
+  public InputEmulator() throws AWTException
   {
     robot.setAutoDelay(40);
     robot.setAutoWaitForIdle(true);
-     
-    System.out.println("About to move mouse to top left corner of screen");
-    robot.delay(2000);
-    robot.mouseMove(10, 10);
- 
-    robot.delay(500);
-    type("Hello, world");
- 
-    System.exit(0);
   }
 
   private void type(int i)
@@ -34,7 +20,7 @@ public class JavaRobotExample
     robot.keyRelease(i);
   }
  
-  private void type(String s)
+  public void type(String s)
   {
     byte[] bytes = s.getBytes();
     for (byte b : bytes)
@@ -46,5 +32,9 @@ public class JavaRobotExample
       robot.keyPress(code);
       robot.keyRelease(code);
     }
+  }
+  
+  public void parseCommand(String s){
+
   }
 }
