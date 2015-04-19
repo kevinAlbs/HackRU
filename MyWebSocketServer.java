@@ -101,7 +101,7 @@ public class MyWebSocketServer extends WebSocketServer{
 		InetSocketAddress addr = server.getAddress();
 		System.out.println("Input Emulator is Running");
 		// TODO spawn new process for http server
-		System.out.println("Navigate your phone to http://" + addr.getAddress().getHostAddress() + ":" + addr.getPort());
+		System.out.println("Navigate your phone to http://" + addr.getAddress().getHostAddress() + ":8000/mouse");
 
 		long sex = 300;
 		System.out.println("You have " + sex + " seconds before this program terminates");
